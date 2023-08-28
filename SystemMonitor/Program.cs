@@ -38,7 +38,11 @@ void AddServices(IServiceCollection services)
 {
     services.AddScoped<IMemoryControllerService, MemoryControllerService>();
 
-    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+    {
+        services.AddScoped<IMemoryService, UnixMemoryService>();
+    }
+    else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
     {
         services.AddScoped<IMemoryService, WindowsMemoryService>();
     }
