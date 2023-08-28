@@ -1,3 +1,10 @@
+using System.Runtime.InteropServices;
+using SystemMonitor.Exceptions;
+using SystemMonitor.Interfaces;
+using SystemMonitor.Interfaces.Controllers;
+using SystemMonitor.Services;
+using SystemMonitor.Services.Controllers;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -6,6 +13,7 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+AddServices(builder.Services);
 
 var app = builder.Build();
 
@@ -23,3 +31,19 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+return;
+
+void AddServices(IServiceCollection services)
+{
+    services.AddScoped<IMemoryControllerService, MemoryControllerService>();
+
+    if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+    {
+        services.AddScoped<IMemoryService, WindowsMemoryService>();
+    }
+    else
+    {
+        throw new OperatingSystemNotSupportedException(RuntimeInformation.OSDescription);
+    }
+}
