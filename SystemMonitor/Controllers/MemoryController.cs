@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SystemMonitor.Interfaces.Controllers;
 using SystemMonitor.Records;
@@ -7,6 +8,7 @@ namespace SystemMonitor.Controllers;
 
 [Route("[controller]")]
 [ApiController]
+[Authorize]
 public class MemoryController : ControllerBase
 {
     private readonly IMemoryControllerService _controllerService;

@@ -1,4 +1,8 @@
 using System.Runtime.InteropServices;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using SystemMonitor;
 using SystemMonitor.Exceptions;
 using SystemMonitor.Interfaces;
 using SystemMonitor.Interfaces.Controllers;
@@ -12,7 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+var authenticationActive = AddAuthentication(builder.Services);
+AddSwaggerGen(builder.Services);
 AddServices(builder.Services);
 
 var app = builder.Build();
@@ -21,18 +26,112 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    AddSwaggerUi();
 }
 
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.MapControllers();
+if (authenticationActive)
+{
+    app.MapControllers();
+}
+else
+{
+    app.MapControllers().AllowAnonymous();
+}
 
 app.Run();
 
 return;
+
+void AddSwaggerGen(IServiceCollection services)
+{
+    if (!authenticationActive)
+    {
+        services.AddSwaggerGen();
+        return;
+    }
+
+    var swaggerUrlAuth = Environment.GetEnvironmentVariable(EnvironmentVariables.SwaggerUrlAuth);
+    var swaggerUrlToken = Environment.GetEnvironmentVariable(EnvironmentVariables.SwaggerUrlToken);
+
+    if (string.IsNullOrWhiteSpace(swaggerUrlAuth) ||
+        string.IsNullOrWhiteSpace(swaggerUrlToken))
+    {
+        services.AddSwaggerGen();
+        return;
+    }
+
+    services.AddSwaggerGen(options =>
+    {
+        options.AddSecurityDefinition("OIDC", new OpenApiSecurityScheme
+        {
+            Type = SecuritySchemeType.OAuth2,
+            Flows = new OpenApiOAuthFlows
+            {
+                AuthorizationCode = new OpenApiOAuthFlow
+                {
+                    AuthorizationUrl = new Uri(swaggerUrlAuth),
+                    TokenUrl = new Uri(swaggerUrlToken),
+                    Scopes = new Dictionary<string, string>
+                    {
+                        {"openid", "Standard OpenID Connect scope"}
+                    }
+                }
+            }
+        });
+
+        options.AddSecurityRequirement(new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "OIDC"
+                    }
+                },
+                Array.Empty<string>()
+            }
+        });
+    });
+}
+
+bool AddAuthentication(IServiceCollection services)
+{
+    var authority = Environment.GetEnvironmentVariable(EnvironmentVariables.AuthAuthority);
+    var audience = Environment.GetEnvironmentVariable(EnvironmentVariables.AuthAudience);
+
+    if (string.IsNullOrWhiteSpace(authority) || string.IsNullOrWhiteSpace(audience))
+    {
+        return false;
+    }
+
+    services.AddAuthentication(options =>
+        {
+            options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+        })
+        .AddJwtBearer(options =>
+        {
+            options.Authority = authority;
+            options.Audience = audience;
+
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuerSigningKey = true,
+                ValidateIssuer = true,
+                ValidateActor = true,
+                ValidateAudience = true,
+                ValidateTokenReplay = true
+            };
+        });
+
+    return true;
+}
 
 void AddServices(IServiceCollection services)
 {
@@ -53,4 +152,25 @@ void AddServices(IServiceCollection services)
     {
         throw new OperatingSystemNotSupportedException(RuntimeInformation.OSDescription);
     }
+}
+
+void AddSwaggerUi()
+{
+    var swaggerClientId = Environment.GetEnvironmentVariable(EnvironmentVariables.SwaggerClientId);
+    var swaggerClientSecret = Environment.GetEnvironmentVariable(EnvironmentVariables.SwaggerClientSecret);
+
+    app.UseSwaggerUI(options =>
+    {
+        if (swaggerClientId != null)
+        {
+            options.OAuthClientId(swaggerClientId);
+
+            if (swaggerClientSecret != null)
+            {
+                options.OAuthClientSecret(swaggerClientSecret);
+            }
+        }
+
+        options.OAuthUsePkce();
+    });
 }
