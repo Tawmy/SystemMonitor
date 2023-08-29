@@ -4,11 +4,11 @@ using SystemMonitor.Records;
 
 namespace SystemMonitor.Services;
 
-public class WindowsDiskService : IDiskService
+public class UnixDiskService : IDiskService
 {
-    public MemoryMetrics GetDiskMetrics(string driveLetter)
+    public MemoryMetrics GetDiskMetrics(string path)
     {
-        var driveInfo = new DriveInfo(driveLetter);
+        var driveInfo = new DriveInfo(path);
 
         var total = UnitHelper.ByteToGb(driveInfo.TotalSize);
         var free = UnitHelper.ByteToGb(driveInfo.AvailableFreeSpace);
@@ -17,9 +17,9 @@ public class WindowsDiskService : IDiskService
         return new MemoryMetrics(total, used, free);
     }
 
-    public MemoryHealth GetDiskHealth(string driveLetter, decimal maximumPercentage)
+    public MemoryHealth GetDiskHealth(string path, decimal maximumPercentage)
     {
-        var metrics = GetDiskMetrics(driveLetter);
+        var metrics = GetDiskMetrics(path);
         return new MemoryHealth(metrics, maximumPercentage);
     }
 }

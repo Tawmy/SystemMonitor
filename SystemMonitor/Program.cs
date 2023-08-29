@@ -41,6 +41,7 @@ void AddServices(IServiceCollection services)
 
     if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
     {
+        services.AddScoped<IDiskService, UnixDiskService>();
         services.AddScoped<IMemoryService, UnixMemoryService>();
     }
     else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
