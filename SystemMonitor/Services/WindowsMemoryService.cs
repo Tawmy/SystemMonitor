@@ -42,10 +42,6 @@ public class WindowsMemoryService : IMemoryService
     public MemoryHealth GetMemoryHealth(decimal maximumPercentage)
     {
         var metrics = GetMemoryMetrics();
-
-        var percentageUsed = Math.Round(decimal.Divide(metrics.Used, metrics.Total) * 100, 2);
-        var isHealthy = maximumPercentage >= percentageUsed;
-
-        return new MemoryHealth(percentageUsed, isHealthy);
+        return new MemoryHealth(metrics, maximumPercentage);
     }
 }

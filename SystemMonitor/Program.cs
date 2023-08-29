@@ -37,6 +37,7 @@ return;
 void AddServices(IServiceCollection services)
 {
     services.AddScoped<IMemoryControllerService, MemoryControllerService>();
+    services.AddScoped<IDiskControllerService, DiskControllerService>();
 
     if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
     {
@@ -45,6 +46,7 @@ void AddServices(IServiceCollection services)
     else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
     {
         services.AddScoped<IMemoryService, WindowsMemoryService>();
+        services.AddScoped<IDiskService, WindowsDiskService>();
     }
     else
     {

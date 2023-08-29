@@ -17,14 +17,14 @@ public class MemoryController : ControllerBase
     }
 
     [HttpGet("metrics")]
-    public Task<ActionResult<MemoryMetrics>> GetMemoryMetrics()
+    public ActionResult<MemoryMetrics> GetMemoryMetrics()
     {
-        return Task.FromResult<ActionResult<MemoryMetrics>>(_controllerService.GetMemoryMetrics());
+        return _controllerService.GetMemoryMetrics();
     }
 
     [HttpGet("health")]
-    public Task<ActionResult<MemoryHealth>> GetMemoryHealth([Required] decimal maximumPercentage)
+    public ActionResult<MemoryHealth> GetMemoryHealth([Required] decimal maximumPercentage)
     {
-        return Task.FromResult<ActionResult<MemoryHealth>>(_controllerService.GetMemoryHealth(maximumPercentage));
+        return _controllerService.GetMemoryHealth(maximumPercentage);
     }
 }
