@@ -9,6 +9,8 @@ using SystemMonitor.Interfaces.Controllers;
 using SystemMonitor.Services;
 using SystemMonitor.Services.Controllers;
 
+LoadDotEnv();
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -45,6 +47,13 @@ else
 app.Run();
 
 return;
+
+void LoadDotEnv()
+{
+    var root = Directory.GetCurrentDirectory();
+    var dotenv = Path.Combine(root, ".env");
+    DotEnv.Load(dotenv);
+}
 
 void AddSwaggerGen(IServiceCollection services)
 {
