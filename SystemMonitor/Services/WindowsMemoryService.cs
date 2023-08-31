@@ -7,7 +7,7 @@ namespace SystemMonitor.Services;
 
 public class WindowsMemoryService : IMemoryService
 {
-    public MemoryMetrics GetMemoryMetrics()
+    public Task<MemoryMetrics> GetMemoryMetrics()
     {
         string output;
 
@@ -36,12 +36,12 @@ public class WindowsMemoryService : IMemoryService
         var free = Math.Round(decimal.Divide(decimal.Parse(freeMemoryParts[1]), 1024), 0);
         var used = total - free;
 
-        return new MemoryMetrics(total, used, free);
+        return Task.FromResult(new MemoryMetrics(total, used, free));
     }
 
-    public MemoryHealth GetMemoryHealth(decimal maximumPercentage)
+    public async Task<MemoryHealth> GetMemoryHealth(decimal maximumPercentage)
     {
-        var metrics = GetMemoryMetrics();
+        var metrics = await GetMemoryMetrics();
         return new MemoryHealth(metrics, maximumPercentage);
     }
 }

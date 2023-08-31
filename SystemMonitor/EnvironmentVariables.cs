@@ -31,4 +31,9 @@ public static class EnvironmentVariables
     ///     OIDC token endpoint URL.
     /// </summary>
     public const string SwaggerUrlToken = "SWAGGER_URL_TOKEN";
+
+    /// <summary>
+    ///     Monitor a remote server instead of the host. Optional.
+    /// </summary>
+    public const string RemoteServerUri = "REMOTE_SERVER_URI";
 }

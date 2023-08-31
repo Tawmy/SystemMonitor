@@ -4,7 +4,7 @@ namespace SystemMonitor.Interfaces;
 
 public interface IMemoryService
 {
-    MemoryMetrics GetMemoryMetrics();
+    Task<MemoryMetrics> GetMemoryMetrics();
 
-    MemoryHealth GetMemoryHealth(decimal maximumPercentage);
+    Task<MemoryHealth> GetMemoryHealth(decimal maximumPercentage);
 }

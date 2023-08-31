@@ -1,4 +1,6 @@
-﻿namespace SystemMonitor.Records;
+﻿using System.Text.Json.Serialization;
+
+namespace SystemMonitor.Records;
 
 public record MemoryHealth
 {
@@ -6,6 +8,13 @@ public record MemoryHealth
     {
         PercentageUsed = CalcPercentageUsed(metrics);
         IsHealthy = CalcHealth(maximumPercentage);
+    }
+
+    [JsonConstructor]
+    public MemoryHealth(decimal percentageUsed, bool isHealthy)
+    {
+        PercentageUsed = percentageUsed;
+        IsHealthy = isHealthy;
     }
 
     public decimal PercentageUsed { get; init; }

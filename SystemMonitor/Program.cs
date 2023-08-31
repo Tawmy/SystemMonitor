@@ -147,15 +147,26 @@ void AddServices(IServiceCollection services)
     services.AddScoped<IMemoryControllerService, MemoryControllerService>();
     services.AddScoped<IDiskControllerService, DiskControllerService>();
 
+    if (Environment.GetEnvironmentVariable(EnvironmentVariables.RemoteServerUri) is { } remoteServer)
+    {
+        services.AddSingleton<IForwardingService, ForwardingService>();
+        services.AddScoped<IDiskService, ExternalDiskService>();
+        services.AddScoped<IMemoryService, ExternalMemoryService>();
+        Console.Out.WriteLine($"Mode: External ({remoteServer})");
+        return;
+    }
+
     if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
     {
         services.AddScoped<IDiskService, UnixDiskService>();
         services.AddScoped<IMemoryService, UnixMemoryService>();
+        Console.Out.WriteLine("Mode: Unix");
     }
     else if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
     {
         services.AddScoped<IMemoryService, WindowsMemoryService>();
         services.AddScoped<IDiskService, WindowsDiskService>();
+        Console.Out.WriteLine("Mode: Windows");
     }
     else
     {

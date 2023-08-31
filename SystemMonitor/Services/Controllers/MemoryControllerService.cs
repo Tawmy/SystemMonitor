@@ -13,12 +13,12 @@ public class MemoryControllerService : IMemoryControllerService
         _memoryService = memoryService;
     }
 
-    public MemoryMetrics GetMemoryMetrics()
+    public Task<MemoryMetrics> GetMemoryMetrics()
     {
         return _memoryService.GetMemoryMetrics();
     }
 
-    public MemoryHealth GetMemoryHealth(decimal maximumPercentage)
+    public Task<MemoryHealth> GetMemoryHealth(decimal maximumPercentage)
     {
         return _memoryService.GetMemoryHealth(maximumPercentage);
     }
