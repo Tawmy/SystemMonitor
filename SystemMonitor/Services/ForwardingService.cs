@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using SystemMonitor.Exceptions;
 using SystemMonitor.Interfaces;
 
@@ -9,16 +10,21 @@ public class ForwardingService : IForwardingService
         new(Environment.GetEnvironmentVariable(EnvironmentVariables.RemoteServerUri) ??
             throw new EnvironmentVariableNotSetException(EnvironmentVariables.RemoteServerUri));
 
-    private static HttpClient HttpClient => new();
-
-    public async Task<T> GetAsync<T>(string relativePath) where T : class
+    public async Task<T> GetAsync<T>(HttpRequest incomingRequest, string relativePath) where T : class
     {
+        var httpClient = new HttpClient();
+
         var uri = new Uri(_remoteServerUri, relativePath);
+
+        var bearer = incomingRequest.Headers.Authorization.FirstOrDefault();
+        httpClient.DefaultRequestHeaders.Authorization = bearer != null
+            ? AuthenticationHeaderValue.Parse(bearer)
+            : null;
 
         HttpResponseMessage result;
         try
         {
-            result = await HttpClient.GetAsync(uri);
+            result = await httpClient.GetAsync(uri);
         }
         catch (Exception e)
         {
@@ -35,11 +41,12 @@ public class ForwardingService : IForwardingService
         return metrics;
     }
 
-    public Task<T> GetAsync<T>(string relativePath, IDictionary<string, string> queryParameters) where T : class
+    public Task<T> GetAsync<T>(HttpRequest incomingRequest, string relativePath,
+        IDictionary<string, string> queryParameters) where T : class
     {
         if (!queryParameters.Any())
         {
-            return GetAsync<T>(relativePath);
+            return GetAsync<T>(incomingRequest, relativePath);
         }
 
         relativePath = $"{relativePath}{StitchQueryParameter(queryParameters.First(), true)}";
@@ -49,7 +56,7 @@ public class ForwardingService : IForwardingService
             relativePath = $"{relativePath}{StitchQueryParameter(queryParameter, false)}";
         }
 
-        return GetAsync<T>(relativePath);
+        return GetAsync<T>(incomingRequest, relativePath);
     }
 
     private string StitchQueryParameter(KeyValuePair<string, string> queryParameter, bool firstParameter)

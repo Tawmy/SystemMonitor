@@ -13,13 +13,13 @@ public class DiskControllerService : IDiskControllerService
         _diskService = diskService;
     }
 
-    public Task<MemoryMetrics> GetDiskMetrics(string path)
+    public Task<MemoryMetrics> GetDiskMetrics(HttpRequest incomingRequest, string path)
     {
-        return _diskService.GetDiskMetricsAsync(path);
+        return _diskService.GetDiskMetricsAsync(incomingRequest, path);
     }
 
-    public Task<MemoryHealth> GetDiskHeath(string path, decimal maximumPercentage)
+    public Task<MemoryHealth> GetDiskHeath(HttpRequest incomingRequest, string path, decimal maximumPercentage)
     {
-        return _diskService.GetDiskHealthAsync(path, maximumPercentage);
+        return _diskService.GetDiskHealthAsync(incomingRequest, path, maximumPercentage);
     }
 }

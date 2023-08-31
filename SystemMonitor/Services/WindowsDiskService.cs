@@ -6,7 +6,7 @@ namespace SystemMonitor.Services;
 
 public class WindowsDiskService : IDiskService
 {
-    public Task<MemoryMetrics> GetDiskMetricsAsync(string driveLetter)
+    public Task<MemoryMetrics> GetDiskMetricsAsync(HttpRequest incomingRequest, string driveLetter)
     {
         var driveInfo = new DriveInfo(driveLetter);
 
@@ -17,9 +17,10 @@ public class WindowsDiskService : IDiskService
         return Task.FromResult(new MemoryMetrics(total, used, free));
     }
 
-    public async Task<MemoryHealth> GetDiskHealthAsync(string driveLetter, decimal maximumPercentage)
+    public async Task<MemoryHealth> GetDiskHealthAsync(HttpRequest incomingRequest, string driveLetter,
+        decimal maximumPercentage)
     {
-        var metrics = await GetDiskMetricsAsync(driveLetter);
+        var metrics = await GetDiskMetricsAsync(incomingRequest, driveLetter);
         return new MemoryHealth(metrics, maximumPercentage);
     }
 }

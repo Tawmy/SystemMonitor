@@ -4,7 +4,7 @@ namespace SystemMonitor.Interfaces.Controllers;
 
 public interface IMemoryControllerService
 {
-    Task<MemoryMetrics> GetMemoryMetrics();
+    Task<MemoryMetrics> GetMemoryMetrics(HttpRequest incomingRequest);
 
-    Task<MemoryHealth> GetMemoryHealth(decimal maximumPercentage);
+    Task<MemoryHealth> GetMemoryHealth(HttpRequest incomingRequest, decimal maximumPercentage);
 }

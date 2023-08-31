@@ -21,12 +21,12 @@ public class MemoryController : ControllerBase
     [HttpGet("metrics")]
     public async Task<ActionResult<MemoryMetrics>> GetMemoryMetrics()
     {
-        return await _controllerService.GetMemoryMetrics();
+        return await _controllerService.GetMemoryMetrics(Request);
     }
 
     [HttpGet("health")]
     public async Task<ActionResult<MemoryHealth>> GetMemoryHealth([Required] decimal maximumPercentage)
     {
-        return await _controllerService.GetMemoryHealth(maximumPercentage);
+        return await _controllerService.GetMemoryHealth(Request, maximumPercentage);
     }
 }

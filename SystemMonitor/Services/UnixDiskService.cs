@@ -6,7 +6,7 @@ namespace SystemMonitor.Services;
 
 public class UnixDiskService : IDiskService
 {
-    public Task<MemoryMetrics> GetDiskMetricsAsync(string path)
+    public Task<MemoryMetrics> GetDiskMetricsAsync(HttpRequest incomingRequest, string path)
     {
         var driveInfo = new DriveInfo(path);
 
@@ -17,9 +17,10 @@ public class UnixDiskService : IDiskService
         return Task.FromResult(new MemoryMetrics(total, used, free));
     }
 
-    public async Task<MemoryHealth> GetDiskHealthAsync(string path, decimal maximumPercentage)
+    public async Task<MemoryHealth> GetDiskHealthAsync(HttpRequest incomingRequest, string path,
+        decimal maximumPercentage)
     {
-        var metrics = await GetDiskMetricsAsync(path);
+        var metrics = await GetDiskMetricsAsync(incomingRequest, path);
         return new MemoryHealth(metrics, maximumPercentage);
     }
 }

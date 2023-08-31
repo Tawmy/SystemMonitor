@@ -4,7 +4,7 @@ namespace SystemMonitor.Interfaces;
 
 public interface IDiskService
 {
-    Task<MemoryMetrics> GetDiskMetricsAsync(string path);
+    Task<MemoryMetrics> GetDiskMetricsAsync(HttpRequest incomingRequest, string path);
 
-    Task<MemoryHealth> GetDiskHealthAsync(string path, decimal maximumPercentage);
+    Task<MemoryHealth> GetDiskHealthAsync(HttpRequest incomingRequest, string path, decimal maximumPercentage);
 }

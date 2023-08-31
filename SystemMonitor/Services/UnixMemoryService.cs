@@ -7,7 +7,7 @@ namespace SystemMonitor.Services;
 
 public class UnixMemoryService : IMemoryService
 {
-    public Task<MemoryMetrics> GetMemoryMetrics()
+    public Task<MemoryMetrics> GetMemoryMetrics(HttpRequest incomingRequest)
     {
         string output;
 
@@ -38,9 +38,9 @@ public class UnixMemoryService : IMemoryService
         return Task.FromResult(new MemoryMetrics(total, used, free));
     }
 
-    public async Task<MemoryHealth> GetMemoryHealth(decimal maximumPercentage)
+    public async Task<MemoryHealth> GetMemoryHealth(HttpRequest incomingRequest, decimal maximumPercentage)
     {
-        var metrics = await GetMemoryMetrics();
+        var metrics = await GetMemoryMetrics(incomingRequest);
         return new MemoryHealth(metrics, maximumPercentage);
     }
 }

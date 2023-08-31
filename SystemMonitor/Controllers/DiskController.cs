@@ -21,13 +21,13 @@ public class DiskController : ControllerBase
     [HttpGet("metrics")]
     public async Task<ActionResult<MemoryMetrics>> GetMemoryMetrics([Required] string path)
     {
-        return await _controllerService.GetDiskMetrics(path);
+        return await _controllerService.GetDiskMetrics(Request, path);
     }
 
     [HttpGet("health")]
     public async Task<ActionResult<MemoryHealth>> GetMemoryHealth([Required] string path,
         [Required] decimal maximumPercentage)
     {
-        return await _controllerService.GetDiskHeath(path, maximumPercentage);
+        return await _controllerService.GetDiskHeath(Request, path, maximumPercentage);
     }
 }
