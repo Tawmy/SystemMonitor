@@ -10,7 +10,7 @@ public class ForwardingService : IForwardingService
         new(Environment.GetEnvironmentVariable(EnvironmentVariables.RemoteServerUri) ??
             throw new EnvironmentVariableNotSetException(EnvironmentVariables.RemoteServerUri));
 
-    public async Task<T> GetAsync<T>(HttpRequest incomingRequest, string relativePath) where T : class
+    public async Task<T> GetAsync<T>(HttpRequest incomingRequest, string relativePath)
     {
         var httpClient = new HttpClient();
 
@@ -42,7 +42,7 @@ public class ForwardingService : IForwardingService
     }
 
     public Task<T> GetAsync<T>(HttpRequest incomingRequest, string relativePath,
-        IDictionary<string, string> queryParameters) where T : class
+        IDictionary<string, string> queryParameters)
     {
         if (!queryParameters.Any())
         {
