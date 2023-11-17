@@ -6,7 +6,7 @@ public static class EnvironmentVariables
     ///     Used for JWT Token validation. Optional.
     /// </summary>
     /// <remarks>
-    /// If this and <see cref="AuthAuthority"/> are set, client authentication is enabled.
+    ///     If this and <see cref="AuthAuthority" /> are set, client authentication is enabled.
     /// </remarks>
     public const string AuthAudience = "AUTH_AUDIENCE";
 
@@ -14,7 +14,7 @@ public static class EnvironmentVariables
     ///     Used for JWT Token validation. Optional.
     /// </summary>
     /// <remarks>
-    /// If this and <see cref="AuthAudience"/> are set, client authentication is enabled.
+    ///     If this and <see cref="AuthAudience" /> are set, client authentication is enabled.
     /// </remarks>
     public const string AuthAuthority = "AUTH_AUTHORITY";
 
@@ -22,7 +22,7 @@ public static class EnvironmentVariables
     ///     OIDC Client ID for Swagger UI. Optional.
     /// </summary>
     /// <remarks>
-    /// Only in effect if <see cref="SwaggerClientId"/> and <see cref="SwaggerClientSecret"/> are set.
+    ///     Only in effect if <see cref="SwaggerClientId" /> and <see cref="SwaggerClientSecret" /> are set.
     /// </remarks>
     public const string SwaggerClientId = "SWAGGER_CLIENT_ID";
 
@@ -30,8 +30,8 @@ public static class EnvironmentVariables
     ///     OIDC Client Secret for Swagger UI. Optional.
     /// </summary>
     /// <remarks>
-    ///     Only in effect if <see cref="SwaggerClientId"/> and <see cref="SwaggerClientSecret"/> are set.
-    ///     <br/><br/>
+    ///     Only in effect if <see cref="SwaggerClientId" /> and <see cref="SwaggerClientSecret" /> are set.
+    ///     <br /><br />
     ///     Do not set this if Swagger is available outside of your network.
     /// </remarks>
     public const string SwaggerClientSecret = "SWAGGER_CLIENT_SECRET";
@@ -40,7 +40,7 @@ public static class EnvironmentVariables
     ///     OIDC auth endpoint URL. Optional.
     /// </summary>
     /// <remarks>
-    /// If this and <see cref="SwaggerUrlToken"/> are set, Swagger will show the "authorize" button.
+    ///     If this and <see cref="SwaggerUrlToken" /> are set, Swagger will show the "authorize" button.
     /// </remarks>
     public const string SwaggerUrlAuth = "SWAGGER_URL_AUTH";
 
@@ -48,7 +48,7 @@ public static class EnvironmentVariables
     ///     OIDC token endpoint URL. Optional.
     /// </summary>
     /// <remarks>
-    /// If this and <see cref="SwaggerUrlAuth"/> are set, Swagger will show the "authorize" button.
+    ///     If this and <see cref="SwaggerUrlAuth" /> are set, Swagger will show the "authorize" button.
     /// </remarks>
     public const string SwaggerUrlToken = "SWAGGER_URL_TOKEN";
 

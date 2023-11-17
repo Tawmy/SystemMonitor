@@ -146,15 +146,20 @@ void AddServices(IServiceCollection services)
 {
     services.AddScoped<IMemoryControllerService, MemoryControllerService>();
     services.AddScoped<IDiskControllerService, DiskControllerService>();
+    services.AddScoped<INetworkControllerService, NetworkControllerService>();
 
     if (Environment.GetEnvironmentVariable(EnvironmentVariables.RemoteServerUri) is { } remoteServer)
     {
         services.AddSingleton<IForwardingService, ForwardingService>();
         services.AddScoped<IDiskService, ExternalDiskService>();
         services.AddScoped<IMemoryService, ExternalMemoryService>();
+        services.AddScoped<INetworkService, ExternalNetworkService>();
         Console.Out.WriteLine($"Mode: External ({remoteServer})");
         return;
     }
+
+    // same service regardless of OS platform
+    services.AddScoped<INetworkService, NetworkService>();
 
     if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
     {
