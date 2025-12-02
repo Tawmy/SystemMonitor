@@ -21,7 +21,7 @@ public class ExternalMemoryService : IMemoryService
     public Task<MemoryHealth> GetMemoryHealth(HttpRequest incomingRequest, decimal maximumPercentage)
     {
         var parameters = new Dictionary<string, string>
-            {{"maximumPercentage", maximumPercentage.ToString(CultureInfo.InvariantCulture)}};
+            { { "maximumPercentage", maximumPercentage.ToString(CultureInfo.InvariantCulture) } };
         return _forwardingService.GetAsync<MemoryHealth>(incomingRequest, "Memory/health", parameters);
     }
 }

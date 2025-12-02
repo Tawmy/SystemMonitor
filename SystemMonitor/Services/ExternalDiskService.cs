@@ -15,7 +15,7 @@ public class ExternalDiskService : IDiskService
 
     public async Task<MemoryMetrics> GetDiskMetricsAsync(HttpRequest incomingRequest, string path)
     {
-        var parameters = new Dictionary<string, string> {{"path", path}};
+        var parameters = new Dictionary<string, string> { { "path", path } };
         return await _forwardingService.GetAsync<MemoryMetrics>(incomingRequest, "Disk/Metrics", parameters);
     }
 
@@ -24,8 +24,8 @@ public class ExternalDiskService : IDiskService
     {
         var parameters = new Dictionary<string, string>
         {
-            {"path", path},
-            {"maximumPercentage", maximumPercentage.ToString(CultureInfo.InvariantCulture)}
+            { "path", path },
+            { "maximumPercentage", maximumPercentage.ToString(CultureInfo.InvariantCulture) }
         };
         return await _forwardingService.GetAsync<MemoryHealth>(incomingRequest, "Disk/Health", parameters);
     }

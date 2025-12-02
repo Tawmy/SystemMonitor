@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using SystemMonitor;
 using SystemMonitor.Exceptions;
 using SystemMonitor.Interfaces;
@@ -57,6 +57,8 @@ void LoadDotEnv()
 
 void AddSwaggerGen(IServiceCollection services)
 {
+    const string scheme = "OIDC";
+    
     if (!authenticationActive)
     {
         services.AddSwaggerGen();
@@ -75,7 +77,7 @@ void AddSwaggerGen(IServiceCollection services)
 
     services.AddSwaggerGen(options =>
     {
-        options.AddSecurityDefinition("OIDC", new OpenApiSecurityScheme
+        options.AddSecurityDefinition(scheme, new OpenApiSecurityScheme
         {
             Type = SecuritySchemeType.OAuth2,
             Flows = new OpenApiOAuthFlows
@@ -86,25 +88,15 @@ void AddSwaggerGen(IServiceCollection services)
                     TokenUrl = new Uri(swaggerUrlToken),
                     Scopes = new Dictionary<string, string>
                     {
-                        {"openid", "Standard OpenID Connect scope"}
+                        { "openid", "Standard OpenID Connect scope" }
                     }
                 }
             }
         });
 
-        options.AddSecurityRequirement(new OpenApiSecurityRequirement
+        options.AddSecurityRequirement(x => new OpenApiSecurityRequirement
         {
-            {
-                new OpenApiSecurityScheme
-                {
-                    Reference = new OpenApiReference
-                    {
-                        Type = ReferenceType.SecurityScheme,
-                        Id = "OIDC"
-                    }
-                },
-                Array.Empty<string>()
-            }
+            { new OpenApiSecuritySchemeReference(scheme, x), [] }
         });
     });
 }
